@@ -1,12 +1,30 @@
-    <?php
-    session_start();
+<?php 
+include "koneksi.php";
+session_start();
+var_dump($_SESSION); // Cek apakah "is_login" muncul
+// Check if user is not logged in, redirect to login page
+if (!isset($_SESSION['username'])) {
+    header("Location: halaman_login.php");
+    exit(); // Ensure script stops executing after redirect
+}
 
-    // Cek login
-    if (!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true) {
-        header("Location: halaman_login.html");
-        exit();
-    }
-    ?>
+
+if (isset($_POST['logout'])){
+    session_destroy();
+    header("location:index.php");
+    exit(); // Ensure script stops executing after redirect
+}
+
+// Periksa apakah pengguna memiliki akses admin
+$admin_akses = isset($_SESSION['admin_akses']) ? $_SESSION['admin_akses'] : null;
+$admin = false; // Set default value for admin access
+
+if ($admin_akses !== null) {
+    // Ensure that $admin_akses is an array
+    $admin_akses = (array) $admin_akses;
+    $admin = in_array("admin", $admin_akses);
+}
+?>
 
     <!DOCTYPE html>
     <html lang="id">
@@ -34,9 +52,10 @@
                     <li><a href="keuangan.php">Keuangan</a></li>
                 <?php endif; ?>
             </ul>
-            <form class="logout-form" action="halaman_login.php" method="POST" onsubmit="return confirmLogout();">
-                <button class="btn-logout" type="submit" name="logout">Logout</button>
-            </form>
+            <form action="logout.php" method="POST" onsubmit="return confirmLogout();">
+    <button type="submit" class="btn-logout">Logout</button>
+</form>
+
         </div>
 
         <!-- Konten -->

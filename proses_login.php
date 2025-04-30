@@ -37,7 +37,7 @@ if (mysqli_num_rows($result) > 0) {
 } else {
     echo "<script>
         alert('Username atau Password salah!');
-        window.location.href = 'halaman_login.html';
+        window.location.href = 'halaman_login.php';
     </script>";
 }
 ?>

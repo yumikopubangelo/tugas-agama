@@ -3,7 +3,7 @@ session_start();
 
 // Cek login dan role Admin
 if (!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true || $_SESSION["role"] !== 'Admin') {
-    header("Location: halaman_login.html");
+    header("Location: halaman_login.php");
     exit();
 }
 ?>
@@ -18,7 +18,7 @@ if (!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true || $_SESSION
     <link rel="stylesheet" href="css/style_dashboard.css">
     <link rel="stylesheet" href="css/style_preloader.css">
     <link rel="stylesheet" href="css/tabel.css">
-    <link rel="stylesheet" href="css/toast.css"
+    <link rel="stylesheet" href="css/toast.css">
     <script>
         function confirmLogout() {
             return confirm('Apakah Anda yakin ingin logout?');
@@ -35,7 +35,7 @@ if (!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true || $_SESSION
             <li><a href="kegiatan.php">Kegiatan</a></li>
             <li><a href="keuangan.php" style="text-decoration: underline;">Keuangan</a></li>
         </ul>
-        <form class="logout-form" action="home.php" method="POST" onsubmit="return confirmLogout();">
+        <form class="logout-form" action="halaman_login.php" method="POST" onsubmit="return confirmLogout();">
             <button class="btn-logout" type="submit" name="logout">Logout</button>
         </form>
     </div>
