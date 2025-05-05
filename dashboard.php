@@ -47,7 +47,9 @@ if ($admin_akses !== null) {
             <div class="logo">Dashboard</div>
             <ul>
                 <li><a href="dashboard.php">Dashboard</a></li>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
                 <li><a href="Zakat.php">Zakat</a></li>
+                <?php endif; ?>
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
                     <li><a href="keuangan.php">Keuangan</a></li>
                 <?php endif; ?>

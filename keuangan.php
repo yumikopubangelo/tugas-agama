@@ -32,8 +32,12 @@ if (!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true || $_SESSION
         <div class="logo">Dashboard</div>
         <ul>
             <li><a href="dashboard.php">Dashboard</a></li>
-            <li><a href="kegiatan.php">Kegiatan</a></li>
-            <li><a href="keuangan.php" style="text-decoration: underline;">Keuangan</a></li>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
+                <li><a href="Zakat.php">Zakat</a></li>
+                <?php endif; ?>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
+                    <li><a href="keuangan.php">Keuangan</a></li>
+                <?php endif; ?>
         </ul>
         <form class="logout-form" action="halaman_login.php" method="POST" onsubmit="return confirmLogout();">
             <button class="btn-logout" type="submit" name="logout">Logout</button>
@@ -48,24 +52,66 @@ if (!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true || $_SESSION
 
     <form action="proses_keuangan.php" method="POST" class="colorful-form">
   <div class="form-group">
-      <label class="form-label" for="tipe">Tipe</label>
-      <select name="tipe" id="tipe" required class="form-input">
-        <option value="Pemasukan">Pemasukan</option>
-        <option value="Pengeluaran">Pengeluaran</option>
-        </select>
+    <label class="form-label" for="tipe_id">Tipe</label>
+    <select name="tipe_id" id="tipe_id" required class="form-input" onchange="toggleSumber()">
+      <?php
+        include 'koneksi.php';
+        $query = mysqli_query($conn, "SELECT id, nama FROM tipe_keuangan");
+        while ($row = mysqli_fetch_assoc($query)) {
+          echo "<option value='{$row['id']}'>{$row['nama']}</option>";
+        }
+      ?>
+    </select>
   </div>
+
+  <div class="form-group" id="sumber-group" style="display: none;">
+    <label class="form-label" for="sumber_id">Sumber Pemasukan</label>
+    <select name="sumber_id" id="sumber_id" class="form-input">
+      <option value="">-- Pilih Sumber --</option>
+      <?php
+        $sumberQuery = mysqli_query($conn, "SELECT id, nama_sumber FROM sumber_keuangan");
+        while ($sumber = mysqli_fetch_assoc($sumberQuery)) {
+          echo "<option value='{$sumber['id']}'>{$sumber['nama_sumber']}</option>";
+        }
+      ?>
+    </select>
+  </div>
+
   <div class="form-group">
-  <label class="form-label" for="tanggal">Tanggal:</label>
-  <input type="datetime-local" name="tanggal" id="tanggal" required class="form-input">
+    <label class="form-label" for="tanggal">Tanggal:</label>
+    <input type="datetime-local" name="tanggal" id="tanggal" required class="form-input">
   </div>
+
   <div class="form-group">
-  <label class="form-label" for="jumlah">Jumlah:</label>
-  <input type="number" name="jumlah" id="jumlah" step="0.01" required class="form-input"><br><br>
+    <label class="form-label" for="jumlah">Jumlah:</label>
+    <input type="number" name="jumlah" id="jumlah" step="0.01" required class="form-input">
   </div>
-  <label class="form-label" for="keterangan">keterangan:</label>
-  <textarea required="" type="text" placeholder="Masukan Keterangan" class="form-input" name="keterangan" id="keterangan"></textarea>
+
+  <label class="form-label" for="keterangan">Keterangan:</label>
+  <textarea name="keterangan" id="keterangan" required placeholder="Masukkan Keterangan" class="form-input"></textarea>
+
   <button class="form-button" type="submit">Simpan Data</button>
 </form>
+
+<script>
+function toggleSumber() {
+  const tipeSelect = document.getElementById('tipe_id');
+  const sumberGroup = document.getElementById('sumber-group');
+
+  // Asumsikan ID 1 adalah "Pemasukan"
+  if (tipeSelect.value === '1') {
+    sumberGroup.style.display = 'block';
+  } else {
+    sumberGroup.style.display = 'none';
+    document.getElementById('sumber_id').value = ''; // reset nilai jika disembunyikan
+  }
+}
+
+// Inisialisasi saat halaman dimuat
+window.addEventListener('DOMContentLoaded', toggleSumber);
+</script>
+
+
 <?php if (isset($_GET['status']) && $_GET['status'] === 'success') : ?>
 <div class="toast success-toast">✅ Data berhasil disimpan!</div>
 <?php elseif (isset($_GET['status']) && $_GET['status'] === 'error') : ?>
