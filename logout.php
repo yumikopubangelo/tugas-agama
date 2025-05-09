@@ -17,5 +17,5 @@ if (ini_get("session.use_cookies")) {
 }
 
 // Redirect ke login
-header("Location: halaman_login.php");
+header("Location: dashboard.php");
 exit();

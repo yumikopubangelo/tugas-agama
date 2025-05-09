@@ -59,18 +59,20 @@ body {
     background-color: #d9363e;
 }
 
-/* Konten utama */
-.dashboard-container {
-    max-width: 800px;
-    margin: 60px auto;
-    background: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+.dashboard {
     text-align: center;
+    width: 80%;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: white; /* Tambahan opsional agar terlihat */
+    border-radius: 10px;      /* Opsional */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Opsional */
 }
+
+
 
 h3 {
     margin-top: 0;
+    text-align: center;
     color: #333;
 }

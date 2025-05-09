@@ -1,16 +1,27 @@
+/* Style untuk Toast */
 .toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 16px 24px;
-    background-color: #4caf50;
-    color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    font-size: 16px;
-    z-index: 9999;
-    transition: opacity 0.5s ease;
-  }
-  .error-toast {
-    background-color: #f44336;
-  }
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999; /* Pastikan toast berada di atas elemen lain */
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: #fff;
+  background-color: #4CAF50;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.toast.success-toast {
+  background-color: #4CAF50;
+}
+
+.toast.error-toast {
+  background-color: #f44336;
+}
+
+.toast.hide {
+  opacity: 0;
+}
