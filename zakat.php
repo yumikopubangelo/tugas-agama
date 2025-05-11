@@ -11,11 +11,12 @@ session_start();
     <?php include 'preloader.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keuangan | <?php echo htmlspecialchars($_SESSION['username']); ?></title>
+    <title>Keuangan </title>
     <link rel="stylesheet" href="css/style_preloader.css">
-    <link rel="stylesheet" href="css/tabel.css">
+    <link rel="stylesheet" href="zakat_table.css">
     <link rel="stylesheet" href="css/toast.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
 </head>
 <body>
 <div class="container">
@@ -112,93 +113,169 @@ session_start();
 
 </div>
 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
-<div class="container">
-<form action="proses_zakat.php" method="POST" class="colorful-form">
+<form action="proses_zakat.php" method="POST" class="colorful-form container-fluid px-5">
+
+  <!-- INFORMASI PRIBADI -->
+  <div class="form-section">
+    <h2 class="form-title">Informasi Pribadi</h2>
+    <div class="form-grid">
+      <!-- Kolom Kiri -->
+      <div class="form-column">
+        <div class="form-group">
+          <label for="nama">Nama:</label>
+          <input type="text" id="nama" name="nama" required>
+        </div>
+        <div class="form-group">
+          <label for="telepon">Nomor Telepon:</label>
+          <input type="text" id="telepon" name="telepon" required>
+        </div>
+        <div class="form-group">
+          <label for="alamat">Alamat:</label>
+          <textarea id="alamat" name="alamat" rows="5" required></textarea>
+        </div>
+      </div>
+
+      <!-- Kolom Kanan -->
+      <div class="form-column">
+        <div class="form-group">
+          <label for="tanggal_pembayaran">Tanggal Pembayaran:</label>
+          <input type="date" id="tanggal_pembayaran" name="tanggal_pembayaran" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="jumlah_tanggungan">Jumlah Tanggungan:</label>
+          <input type="number" id="jumlah_tanggungan" name="jumlah_tanggungan" required>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JENIS ZAKAT -->
+  <div class="form-section">
+    <h2 class="form-title">Jenis Zakat</h2>
     <div class="form-group">
-        <label class="form-label" for="no_muzzaki">No Muzzaki:</label>
-        <input type="number" name="no_muzzaki" id="no_muzzaki" required class="form-input">
+      <label for="jenis_zakat">Jenis Zakat:</label>
+      <select name="jenis_zakat" id="jenis_zakat" required onchange="toggleJenisZakat()">
+        <?php
+        include 'koneksi.php';
+        $query = mysqli_query($conn, "SELECT id, nama FROM jenis_zakat");
+        while ($row = mysqli_fetch_assoc($query)) {
+          echo "<option value='{$row['id']}' data-nama='{$row['nama']}'>{$row['nama']}</option>";
+        }
+        ?>
+      </select>
     </div>
+  </div>
 
-    <div class="form-group">
-        <label class="form-label" for="tanggal">Tanggal:</label>
-        <input type="datetime-local" name="tanggal" id="tanggal" required class="form-input">
+  <!-- ZAKAT FITRAH -->
+  <div id="jumlah-zakat-group" class="form-section" style="display: none;">
+    <div class="form-grid">
+      <div class="form-column">
+        <div class="form-group">
+          <label for="jumlah_individu">Jumlah Individu:</label>
+          <input type="number" id="jumlah_individu" name="jumlah_individu" min="1">
+        </div>
+        <div class="form-group">
+          <label for="harga_beras">Harga Beras per Kg:</label>
+          <input type="number" id="harga_beras" name="harga_beras" step="0.01">
+        </div>
+      </div>
+      <div class="form-column">
+        <div class="form-group">
+          <label for="jumlah_zakat2">Jumlah Zakat:</label>
+          <input type="text" id="jumlah_zakat2" readonly>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="form-group">
-        <label class="form-label" for="jenis_zakat">Jenis Zakat</label>
-        <select name="jenis_zakat" id="jenis_zakat" required class="form-input" onchange="toggleJenisZakat()">
-            <?php
-            include 'koneksi.php';
-            $query = mysqli_query($conn, "SELECT id, nama FROM jenis_zakat");
-            while ($row = mysqli_fetch_assoc($query)) {
-                echo "<option value='{$row['id']}' data-nama='{$row['nama']}'>{$row['nama']}</option>";
-            }
-            ?>
-        </select>
+  <!-- ZAKAT PENGHASILAN -->
+  <div id="penghasilan-group" class="form-section" style="display: none;">
+    <div class="form-grid">
+      <div class="form-column">
+        <div class="form-group">
+          <label for="Penghasilan">Jumlah Penghasilan:</label>
+          <input type="number" id="Penghasilan" name="Penghasilan">
+        </div>
+        <div class="form-group">
+          <label for="persentase_zakat">Persentase Zakat (%):</label>
+          <input type="number" id="persentase_zakat" name="persentase_zakat" step="0.01">
+        </div>
+      </div>
+      <div class="form-column">
+        <div class="form-group">
+          <label for="Jumlah_Zakat_penghasilan">Jumlah Zakat:</label>
+          <input type="text" id="Jumlah_Zakat_penghasilan" readonly>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Input untuk zakat Fitrah -->
-    <div class="form-group" id="jumlah-zakat-group">
-        <label class="form-label" for="Jumlah_Zakat">Jumlah Zakat:</label>
-        <input type="number" step="0.01" name="Jumlah_Zakat" id="Jumlah_Zakat" class="form-input">
-    </div>
-
-    <!-- Input untuk zakat Mal atau lainnya -->
-    <div class="form-group" id="penghasilan-group" style="display: none;">
-        <label class="form-label" for="Penghasilan">Penghasilan:</label>
-        <input type="number" step="0.01" name="Penghasilan" id="Penghasilan" class="form-input">
-    </div>
-    <div class="form-group" id="ternak-group" style="display: none;">
-        <label>Jenis Ternak:</label>
-        <select name="jenis_ternak" class="form-input">
+  <!-- ZAKAT TERNAK -->
+  <div id="ternak-group" class="form-section" style="display: none;">
+    <div class="form-grid">
+      <div class="form-column">
+        <div class="form-group">
+          <label for="jenis_ternak">Jenis Ternak:</label>
+          <select id="jenis_ternak" name="jenis_ternak">
             <option value="kambing">Kambing</option>
             <option value="sapi">Sapi</option>
             <option value="unta">Unta</option>
-        </select>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="jumlah_ternak">Jumlah Ternak:</label>
+          <input type="number" id="jumlah_ternak" name="jumlah_ternak" min="1">
+        </div>
+      </div>
+      <div class="form-column">
+        <div class="form-group">
+          <label for="Jumlah_Zakat_ternak">Jumlah Zakat:</label>
+          <input type="text" id="Jumlah_Zakat_ternak" name="Jumlah_Zakat_ternak" readonly>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="form-group" id="jumlah-ternak-group" style="display: none;">
-        <label>Jumlah Ternak:</label>
-        <input type="number" name="jumlah_ternak" class="form-input" min="1">
-    </div>
-    <div class="form-group" id="persentase-group" style="display: none;">
-        <label class="form-label" for="persentase_zakat">Persentase Zakat (%):</label>
-        <input type="number" step="0.01" name="persentase_zakat" id="persentase_zakat" class="form-input">
-    </div>
-
+  <!-- TOMBOL SIMPAN -->
+  <div class="form-section text-center">
     <button class="form-button" type="submit">Simpan Data</button>
+  </div>
+
 </form>
-</div>
 <?php endif; ?>
+
 <script>
-function toggleJenisZakat() {
-    const select = document.getElementById("jenis_zakat");
-    const selectedOption = select.options[select.selectedIndex];
-    const namaZakat = selectedOption.getAttribute("data-nama").toLowerCase();
+ window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get('status');
+  if (status === 'success' || status === 'error') {
+    const toastMessage = document.createElement('div');
+    toastMessage.classList.add('toast');
+    toastMessage.classList.add(status === 'success' ? 'success-toast' : 'error-toast');
+    toastMessage.textContent = status === 'success' ? '✅ Data berhasil disimpan!' : '❌ Gagal menyimpan data!';
 
-    // Reset tampilan semua form-group
-    document.getElementById("penghasilan-group").style.display = "none";
-    document.getElementById("persentase-group").style.display = "none";
-    document.getElementById("jumlah-zakat-group").style.display = "none";
-    document.getElementById("ternak-group").style.display = "none";
-    document.getElementById("jumlah-ternak-group").style.display = "none";
+    document.body.appendChild(toastMessage);
+    
+    // Tampilkan toast dengan animasi
+    setTimeout(() => {
+      toastMessage.style.display = 'block';  // Menampilkan toast
 
-    if (namaZakat === "fitrah") {
-        document.getElementById("jumlah-zakat-group").style.display = "block";
-    } else if (namaZakat === "mal") {
-        document.getElementById("penghasilan-group").style.display = "block";
-        document.getElementById("persentase-group").style.display = "block";
-    } else if (namaZakat === "peternakan") {
-        document.getElementById("ternak-group").style.display = "block";
-        document.getElementById("jumlah-ternak-group").style.display = "block";
-    }
-}
-
-// Memanggil fungsi saat halaman pertama kali dimuat
-window.onload = toggleJenisZakat;
+      // Hapus toast setelah 3 detik
+      setTimeout(() => {
+        toastMessage.classList.add('hide');
+        setTimeout(() => toastMessage.remove(), 500); // Hapus dari DOM setelah fade out
+      }, 3000);
+    }, 0);
+  }
+});
 </script>
 
 <?php include 'footer.php'; ?>
 <script src="js/preloader.js"></script>
+<script src="script.js" defer></script>
 </body>
 </html>

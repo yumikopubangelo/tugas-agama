@@ -35,24 +35,22 @@ $admin = in_array("admin", $admin_akses);
         }
     </script>
 </head>
+
 <body>
-<br><br>
-
-
-
+<div class="container position-relative" style="max-width: 100%; padding: 0;">
+  <img src="asset/Sign-Masjid.jpg" class="img-fluid w-100" alt="">
+  <div class="position-absolute top-50 start-50 translate-middle text-center text-white" style="background-color: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px;">
+    <h3 class="fw-bold">Selamat Datang <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Pengunjung'; ?> di Website Resmi Masjid Suhada</h3>
+    <p class="mb-0">Pusat Informasi Dakwah, Kegiatan & Zakat</p>
+    <small class="blockquote-footer text-white">DKM Masjid Suhada — Tasikmalaya, Jawa Barat</small>
+  </div>
+</div>
 <div class="container">
-  <figure class="text-center">
-  <blockquote class="blockquote">
-    <h3>
-      Selamat Datang  <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Pengunjung'; ?> di Website Resmi Masjid Suhada
-      <small class="text-body-secondary">Pusat Informasi Dakwah, Kegiatan & Zakat</small>
-    </h3>
-  </blockquote>
-  <figcaption class="blockquote-footer">
-    DKM Masjid Suhada <cite title="DKM Masjid Suhada">Tasikmalaya, Jawa Barat</cite>
-  </figcaption>
-</figure>
+  
+
+  
 <br><br>
+
 <!-- Card Artikel Utama -->
 <div class="container">
   <div class="card mb-3">
@@ -213,7 +211,7 @@ $admin = in_array("admin", $admin_akses);
 
 <!-- Carousel Kegiatan DKM -->
 <br><br>
-<h3 class="text-left">Kegiatan DKM</h3>
+<h3 class="text-left">Galeri Suhada</h3>
 <br>
 <div id="carouselExampleCaptions" class="carousel carousel-dark slide">
   <div class="carousel-indicators">
@@ -223,31 +221,27 @@ $admin = in_array("admin", $admin_akses);
   </div>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="asset/crsl1.jpg" class="d-block w-100" alt="...">
+      <img src="asset/Interior-Masjid.jpg" class="d-block w-100" alt="...">
       <div class="carousel-caption d-none d-md-block">
-        <h5>Bakti Sosial Ramadan</h5>
-        <p>Pembagian sembako kepada warga sekitar dalam rangka menyambut bulan suci Ramadan.</p>
+        <h5>Sholat Berjamaah</h5>
       </div>
     </div>
     <div class="carousel-item">
-      <img src="asset/crsl2.jpg" class="d-block w-100" alt="...">
+      <img src="asset/Selasar-Madrasah-Masjid.jpg" class="d-block w-100" alt="...">
       <div class="carousel-caption d-none d-md-block">
-        <h5>Program Santunan Anak Yatim</h5>
-        <p>Acara tahunan bersama anak-anak yatim dengan penyerahan donasi dari jamaah.</p>
+        <h5>Madrasah</h5>
       </div>
     </div>
     <div class="carousel-item">
-      <img src="asset/crsl3.jpg" class="d-block w-100" alt="...">
+      <img src="asset/Sign-Toilet--Masjid.jpg" class="d-block w-100" alt="...">
       <div class="carousel-caption d-none d-md-block">
-        <h5>Pelatihan Tahsin Quran</h5>
-        <p>Kegiatan mingguan untuk memperbaiki bacaan Al-Qur'an bersama pengajar tahsin bersertifikat.</p>
+        <h5>Toilet</h5>
       </div>
     </div>
     <div class="carousel-item">
-      <img src="asset/crsl4.jpg" class="d-block w-100" alt="...">
+      <img src="asset/Tampak-Depan-Masjid-2.jpg" class="d-block w-100" alt="...">
       <div class="carousel-caption d-none d-md-block">
-        <h5>Musyawarah DKM Tahunan</h5>
-        <p>Pertemuan pengurus masjid untuk evaluasi dan perencanaan program tahun depan.</p>
+        <h5>Masjid Suhada</h5>
       </div>
     </div>
   </div>
@@ -261,6 +255,7 @@ $admin = in_array("admin", $admin_akses);
   </button>
 </div>
 </div>
+
 
 <?php include 'footer.php'; ?>
 <script src="js/preloader.js"></script>

@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
 <style>
-        footer {
-            margin-top: -20px; /* Atur margin untuk membuat footer lebih dekat */
-        }
-
-        .container {
-            min-height: calc(100vh - 80px); /* Atur tinggi container agar footer lebih dekat */
-        }
+      .footer-custom {
+    background: linear-gradient(to right, #2dd4bf, #1ab7a7); /* Gradient background */
+    color: white; /* White text for contrast */
+}
+.footer-text {
+    margin: 0;
+    font-size: 1rem; /* Font size for footer text */
+}
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

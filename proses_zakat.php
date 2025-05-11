@@ -1,54 +1,111 @@
 <?php
-include 'koneksi.php';
+// Tampilkan error PHP di layar
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// Validasi input POST
-$jenis_id = $_POST['jenis_zakat'];
-$no_muzzaki = $_POST['no_muzzaki'];
-$tanggal = $_POST['tanggal'];
+// Cek metode POST
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    include 'koneksi.php';
 
-// Ambil nama zakat dengan prepared statement untuk menghindari SQL injection
-$stmt = $conn->prepare("SELECT nama FROM jenis_zakat WHERE id = ?");
-$stmt->bind_param("i", $jenis_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$jenis_nama = strtolower($row['nama']);
+    // Validasi field wajib
+    if (!isset($_POST['nama'], $_POST['telepon'], $_POST['alamat'], $_POST['email'], $_POST['jumlah_tanggungan'], $_POST['jenis_zakat'])) {
+        echo "<h3>Data tidak lengkap. Silakan isi semua data wajib.</h3>";
+        exit;
+    }
 
-// Masukkan ke tabel utama zakat
-$stmt = $conn->prepare("INSERT INTO zakat (no_muzzaki, tanggal, jenis_zakat) VALUES (?, ?, ?)");
-$stmt->bind_param("iss", $no_muzzaki, $tanggal, $jenis_nama);
-$stmt->execute();
-$zakat_id = $conn->insert_id;
+    // Ambil data pribadi
+    $nama               = $_POST['nama'];
+    $telepon            = $_POST['telepon'];
+    $alamat             = $_POST['alamat'];
+    $email              = $_POST['email'];
+    $tanggal_pembayaran = $_POST['tanggal_pembayaran'];
+    $tanggungan         = $_POST['jumlah_tanggungan'];
+    $tanggal            = date('Y-m-d H:i:s');
+    $jenis_zakat_id     = (int) $_POST['jenis_zakat'];
 
-// Lanjut ke tabel khusus
-if ($jenis_nama === 'mal') {
-    $penghasilan = $_POST['Penghasilan'];
-    $persen = $_POST['persentase_zakat'];
-    $stmt = $conn->prepare("INSERT INTO zakat_mal (zakat_id, penghasilan, persentase_zakat) VALUES (?, ?, ?)");
-    $stmt->bind_param("idd", $zakat_id, $penghasilan, $persen);
+    // Ambil nama jenis zakat (untuk validasi)
+    $stmt = $conn->prepare("SELECT nama FROM jenis_zakat WHERE id = ?");
+    $stmt->bind_param("i", $jenis_zakat_id);
     $stmt->execute();
-} elseif ($jenis_nama === 'peternakan') {
-    $jenis_ternak = $_POST['jenis_ternak'];
-    $jumlah_ternak = $_POST['jumlah_ternak'];
+    $result = $stmt->get_result();
+    $data = $result->fetch_assoc();
+    $jenis_nama = $data['nama'] ?? null;
 
-    // Ambil aturan zakat dari zakat_peternakan menggunakan prepared statement
-    $stmt = $conn->prepare("SELECT zakat_output FROM zakat_peternakan WHERE jenis_ternak = ? AND batas_bawah <= ? AND batas_atas >= ? LIMIT 1");
-    $stmt->bind_param("sii", $jenis_ternak, $jumlah_ternak, $jumlah_ternak);
-    $stmt->execute();
-    $query = $stmt->get_result();
-    $data = $query->fetch_assoc();
-    $output = $data ? $data['zakat_output'] : 'Tidak wajib zakat';
+    if (!$jenis_nama) {
+        echo "<h3>Jenis zakat tidak ditemukan!</h3>";
+        exit;
+    }
 
-    // Simpan ke transaksi
-    $stmt = $conn->prepare("INSERT INTO transaksi_zakat_peternakan (zakat_id, jenis_ternak, jumlah_ternak, hasil_zakat) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("isis", $zakat_id, $jenis_ternak, $jumlah_ternak, $output);
+    // Simpan data muzzaki
+    $stmt = $conn->prepare("INSERT INTO muzzaki (Nama_Muzzaki, nomor_hp, alamat, tanggal_pembayaran, email, jumlah_tanggungan) VALUES (?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        echo "<h3>Error persiapan query muzzaki: " . $conn->error . "</h3>";
+        exit;
+    }
+    $stmt->bind_param("sssssi", $nama, $telepon, $alamat, $tanggal_pembayaran, $email, $tanggungan);
     $stmt->execute();
-} elseif ($jenis_nama === 'fitrah') {
-    $jumlah = $_POST['Jumlah_Zakat'];
-    $stmt = $conn->prepare("UPDATE zakat SET jumlah_zakat = ? WHERE id = ?");
-    $stmt->bind_param("di", $jumlah, $zakat_id);
+    $no_muzzaki = $conn->insert_id;
+
+    // Simpan ke tabel zakat
+    $stmt = $conn->prepare("INSERT INTO zakat (No_Muzzaki, tanggal, jenis_zakat_id) VALUES (?, ?, ?)");
+    if (!$stmt) {
+        echo "<h3>Error saat prepare tabel zakat: " . $conn->error . "</h3>";
+        exit;
+    }
+    $stmt->bind_param("isi", $no_muzzaki, $tanggal, $jenis_zakat_id);
+    if (!$stmt->execute()) {
+        echo "<h3>Error saat menyimpan ke tabel zakat: " . $stmt->error . "</h3>";
+        exit;
+    }
+    $zakat_id = $conn->insert_id;
+
+    // Simpan ke tabel sesuai jenis zakat
+    if ($jenis_zakat_id == 1) { // Zakat Fitrah
+        $jumlah_individu = $_POST['jumlah_individu'] ?? 0;
+        $harga_beras     = $_POST['harga_beras'] ?? 0;
+        $jumlah_zakat    = $jumlah_individu * $harga_beras;
+
+       $stmt = $conn->prepare("INSERT INTO zakat_fitrah (zakat_id, jumlah_individu, harga_beras, jumlah_zakat) VALUES (?, ?, ?, ?)");
+        if (!$stmt) {
+            echo "<h3>❌ Gagal prepare zakat_fitrah: " . $conn->error . "</h3>";
+            exit;
+        }
+        $stmt->bind_param("iidd", $zakat_id, $jumlah_individu, $harga_beras, $jumlah_zakat);
+        $stmt->execute();
+
+
+    } elseif ($jenis_zakat_id == 2) { // Zakat Mal
+    $penghasilan      = $_POST['Penghasilan'] ?? 0;
+    $persentase_zakat = $_POST['persentase_zakat'] ?? 0;
+    $jumlah_zakat     = ($penghasilan * $persentase_zakat) / 100;
+
+    $stmt = $conn->prepare("INSERT INTO zakat_mal (zakat_id, penghasilan, persentase_zakat, jumlah_zakat) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("iddd", $zakat_id, $penghasilan, $persentase_zakat, $jumlah_zakat);
+    $stmt->execute();
+
+
+
+} elseif ($jenis_zakat_id == 3) { // Zakat Peternakan
+    $jenis_ternak  = $_POST['jenis_ternak'] ?? '';
+    $jumlah_ternak = (float)($_POST['jumlah_ternak'] ?? 0);
+    $jumlah_zakat  = (float)($_POST['Jumlah_Zakat_ternak'] ?? 0);
+ // Ambil dari input hidden JS
+
+    $stmt = $conn->prepare("INSERT INTO zakat_peternakan (zakat_id, jenis_ternak, jumlah_ternak, jumlah_zakat) VALUES (?, ?, ?, ?)");
+    if (!$stmt) {
+        die("❌ Prepare failed (insert zakat_peternakan): " . $conn->error);
+    }
+
+    $stmt->bind_param("isdd", $zakat_id, $jenis_ternak, $jumlah_ternak, $jumlah_zakat);
     $stmt->execute();
 }
 
-echo "<script>alert('Zakat berhasil disimpan'); window.location.href='form_zakat.php';</script>";
+} 
+
+
+// Jika tidak error sampai sini, berarti sukses
+header("Location: zakat.php?status=success");
+exit;
+
 ?>
