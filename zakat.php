@@ -7,7 +7,7 @@ session_start();
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <?php include 'header.php'; ?>
+  <?php include 'header.php'; ?>
     <?php include 'preloader.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,11 +15,13 @@ session_start();
     <link rel="stylesheet" href="css/style_preloader.css">
     <link rel="stylesheet" href="zakat_table.css">
     <link rel="stylesheet" href="css/toast.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
 </head>
 <body>
-<div class="container">
+<body>
+  <div class="main-content container">
+
 
 <h2 class="text-center my-4">Informasi Zakat</h2>
 
@@ -112,7 +114,7 @@ session_start();
 </table>
 
 </div>
-<?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
+
 <form action="proses_zakat.php" method="POST" class="colorful-form container-fluid px-5">
 
   <!-- INFORMASI PRIBADI -->
@@ -246,8 +248,7 @@ session_start();
   </div>
 
 </form>
-<?php endif; ?>
-
+</div>
 <script>
  window.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);

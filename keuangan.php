@@ -47,48 +47,91 @@ $saldo = $data['saldo'];
   </blockquote>
 </figure>
 
-    <form action="proses_keuangan.php" method="POST" class="colorful-form">
-  <div class="form-group">
-    <label class="form-label" for="tipe_id">Tipe</label>
-    <select name="tipe_id" id="tipe_id" required class="form-input" onchange="toggleSumber()">
+    <div class="form-container">
+  <form action="proses_keuangan.php" method="POST" class="colorful-form">
+    
+    <div class="form-group">
+      <label class="form-label" for="tipe_id">Tipe</label>
+      <select name="tipe_id" id="tipe_id" required class="form-input" onchange="toggleSumber()">
+        <?php
+          include 'koneksi.php';
+          $query = mysqli_query($conn, "SELECT id, nama FROM tipe_keuangan");
+          while ($row = mysqli_fetch_assoc($query)) {
+            echo "<option value='{$row['id']}'>{$row['nama']}</option>";
+          }
+        ?>
+      </select>
+    </div>
+
+    <div class="form-group" id="sumber-group" style="display: none;">
+      <label class="form-label" for="sumber_id">Sumber Pemasukan</label>
+      <select name="sumber_id" id="sumber_id" class="form-input">
+        <option value="">-- Pilih Sumber --</option>
+        <?php
+          $sumberQuery = mysqli_query($conn, "SELECT id, nama_sumber FROM sumber_keuangan");
+          while ($sumber = mysqli_fetch_assoc($sumberQuery)) {
+            echo "<option value='{$sumber['id']}'>{$sumber['nama_sumber']}</option>";
+          }
+        ?>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="tanggal">Tanggal</label>
+      <input type="datetime-local" name="tanggal" id="tanggal" required class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="jumlah">Jumlah</label>
+      <input type="number" name="jumlah" id="jumlah" step="0.01" required class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="keterangan">Keterangan</label>
+      <textarea name="keterangan" id="keterangan" required placeholder="Masukkan Keterangan" class="form-input" rows="3"></textarea>
+    </div>
+
+    <div class="form-group text-center">
+      <button class="form-button" type="submit">Simpan Data</button>
+    </div>
+
+  </form>
+</div>
+
+
+<div class="table-wrapper">
+  <table class="table-keuangan">
+    <thead>
+      <tr>
+        <th>Tanggal</th>
+        <th>Tipe</th>
+        <th>Sumber</th>
+        <th>Jumlah</th>
+        <th>Keterangan</th>
+      </tr>
+    </thead>
+    <tbody>
       <?php
-        include 'koneksi.php';
-        $query = mysqli_query($conn, "SELECT id, nama FROM tipe_keuangan");
-        while ($row = mysqli_fetch_assoc($query)) {
-          echo "<option value='{$row['id']}'>{$row['nama']}</option>";
-        }
+      $queryData = "SELECT k.tanggal, t.nama AS tipe, s.nama_sumber, k.jumlah, k.keterangan 
+                    FROM keuangan k
+                    LEFT JOIN tipe_keuangan t ON k.tipe_id = t.id
+                    LEFT JOIN sumber_keuangan s ON k.sumber_id = s.id
+                    ORDER BY k.tanggal DESC";
+      $resultData = mysqli_query($conn, $queryData);
+
+      while ($row = mysqli_fetch_assoc($resultData)) {
+        echo "<tr>
+                <td>" . date('d-m-Y H:i', strtotime($row['tanggal'])) . "</td>
+                <td>{$row['tipe']}</td>
+                <td>" . ($row['nama_sumber'] ?? '-') . "</td>
+                <td>Rp " . number_format($row['jumlah'], 0, ',', '.') . "</td>
+                <td>{$row['keterangan']}</td>
+              </tr>";
+      }
       ?>
-    </select>
-  </div>
-
-  <div class="form-group" id="sumber-group" style="display: none;">
-    <label class="form-label" for="sumber_id">Sumber Pemasukan</label>
-    <select name="sumber_id" id="sumber_id" class="form-input">
-      <option value="">-- Pilih Sumber --</option>
-      <?php
-        $sumberQuery = mysqli_query($conn, "SELECT id, nama_sumber FROM sumber_keuangan");
-        while ($sumber = mysqli_fetch_assoc($sumberQuery)) {
-          echo "<option value='{$sumber['id']}'>{$sumber['nama_sumber']}</option>";
-        }
-      ?>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label class="form-label" for="tanggal">Tanggal:</label>
-    <input type="datetime-local" name="tanggal" id="tanggal" required class="form-input">
-  </div>
-
-  <div class="form-group">
-    <label class="form-label" for="jumlah">Jumlah:</label>
-    <input type="number" name="jumlah" id="jumlah" step="0.01" required class="form-input">
-  </div>
-
-  <label class="form-label" for="keterangan">Keterangan:</label>
-  <textarea name="keterangan" id="keterangan" required placeholder="Masukkan Keterangan" class="form-input"></textarea>
-
-  <button class="form-button" type="submit">Simpan Data</button>
-</form>
+    </tbody>
+  </table>
+</div>
 
 <script>
 function toggleSumber() {

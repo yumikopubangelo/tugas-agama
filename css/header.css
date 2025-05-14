@@ -1,7 +1,13 @@
+
+
 .navbar-custom {
   background-color: transparent;
   transition: all 0.3s ease;
   padding: 10px 20px; /* Added padding for better spacing */
+}
+/* Tambahkan offset agar konten tidak tertutup navbar */
+main, .form-container, .table-wrapper, .content, .dashboard-container {
+  margin-top: 100px; /* Sesuaikan dengan tinggi navbar Anda (biasanya 70-100px) */
 }
 
 .navbar-custom.scrolled {

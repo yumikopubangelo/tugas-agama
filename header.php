@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Test Navbar</title>
+  <title>Suhadah.my.id</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <link rel="stylesheet" href="css/header.css">
@@ -13,7 +13,7 @@
 <nav class="navbar navbar-expand-lg navbar-custom shadow-sm">
   <div class="container-fluid">
     <a class="navbar-brand d-flex align-items-center" href="#">
-      <img src="asset/logo_dkm.png" alt="Logo" width="60" height="40" class="me-2" />
+      <img src="asset/logo-masjid-suhada.png" alt="Logo" width="60" height="40" class="me-2" />
       Syuhada.com
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"

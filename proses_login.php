@@ -11,33 +11,61 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $username = $_POST['username'];
 $password = $_POST['password'];
 
-// Cek user
-$query = "SELECT * FROM user WHERE username = '$username' AND password = '$password'";
-$result = mysqli_query($conn, $query);
+// Ambil user berdasarkan username
+$query = "SELECT * FROM user WHERE username = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if (mysqli_num_rows($result) > 0) {
-    $user = mysqli_fetch_assoc($result);
+if ($result && $result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+    $storedPassword = $user['password'];
+    $userId = $user['user_id'];
 
-    // Set session
-    $_SESSION['is_login'] = true;
-    $_SESSION['user_id'] = $user['user_id'];
-    $_SESSION['username'] = $user['username'];
+    $isHashed = strlen($storedPassword) === 60 && substr($storedPassword, 0, 4) === '$2y$';
 
-    // Cek role dan set ke session
-    $role_query = "SELECT role FROM user_assigment ua
-                   JOIN role r ON ua.role_id = r.role_id
-                   WHERE ua.user_id = " . $user['user_id'];
-    $role_result = mysqli_query($conn, $role_query);
-    $role = mysqli_fetch_assoc($role_result);
+    if (
+        // Kasus: sudah hashed dan password_verify cocok
+        ($isHashed && password_verify($password, $storedPassword)) ||
+        // Kasus: belum di-hash dan cocok secara langsung
+        (!$isHashed && $password === $storedPassword)
+    ) {
+        // Jika belum di-hash, hash sekarang dan update
+        if (!$isHashed) {
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            $updateQuery = "UPDATE user SET password = ? WHERE user_id = ?";
+            $updateStmt = $conn->prepare($updateQuery);
+            $updateStmt->bind_param("si", $hashedPassword, $userId);
+            $updateStmt->execute();
+        }
 
-    $_SESSION['role'] = $role['role']; // Simpan role (Admin atau User)
+        $_SESSION['is_login'] = true;
+        $_SESSION['user_id'] = $userId;
+        $_SESSION['username'] = $user['username'];
 
-    header("Location: dashboard.php"); // Setelah login berhasil
-    exit();
-} else {
-    echo "<script>
-        alert('Username atau Password salah!');
-        window.location.href = 'halaman_login.php';
-    </script>";
+        // Ambil role dari tabel relasi
+        $role_query = "SELECT r.role FROM user_assigment ua
+                       JOIN role r ON ua.role_id = r.role_id
+                       WHERE ua.user_id = ?";
+        $role_stmt = $conn->prepare($role_query);
+        $role_stmt->bind_param("i", $userId);
+        $role_stmt->execute();
+        $role_result = $role_stmt->get_result();
+
+        if ($role_result && $role_result->num_rows > 0) {
+            $role = $role_result->fetch_assoc();
+            $_SESSION['role'] = $role['role'];
+        }
+
+        // ✅ Redirect ke halaman sukses login
+        header("Location: dashboard.php");
+        exit();
+    }
 }
+
+// ❌ Jika username tidak ditemukan atau password salah
+$_SESSION['login_error'] = "Username atau Password salah!";
+header("Location: halaman_login.php");
+exit();
 ?>

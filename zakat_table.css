@@ -13,7 +13,7 @@ body {
   padding: 2rem;
 }
 
-/* FORM SECTIONS */
+/* FORM SECTION */
 .form-section {
   background-color: #ffffff;
   padding: 2rem;
@@ -24,10 +24,11 @@ body {
 
 /* TITLES */
 .form-title {
-  text-align: center;
   font-size: 1.8rem;
-  margin-bottom: 1.5rem;
+  font-weight: 700;
   color: #2c3e50;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 /* GRID LAYOUT */
@@ -47,10 +48,12 @@ body {
   margin-bottom: 1.5rem;
 }
 
+.form-label,
 .form-group label {
   display: block;
   font-weight: 600;
   margin-bottom: 0.5rem;
+  color: #444;
 }
 
 input[type="text"],
@@ -58,27 +61,31 @@ input[type="email"],
 input[type="number"],
 input[type="date"],
 select,
-textarea {
+textarea,
+.form-input {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
-  transition: border 0.3s ease;
+  background-color: #fafafa;
+  transition: border 0.3s ease, background-color 0.3s ease;
   box-sizing: border-box;
 }
 
 input:focus,
 select:focus,
-textarea:focus {
+textarea:focus,
+.form-input:focus {
   border-color: #3498db;
+  background-color: #fff;
   outline: none;
 }
 
 /* BUTTON */
 .form-button {
   background-color: transparent;
-  color: #27ae60; /* hijau */
+  color: #27ae60;
   border: 2px solid #27ae60;
   padding: 0.75rem 2rem;
   font-size: 1rem;
@@ -86,6 +93,7 @@ textarea:focus {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
+  width: 100%;
 }
 
 .form-button:hover {
@@ -93,6 +101,39 @@ textarea:focus {
   color: white;
 }
 
+/* ERROR STYLING */
+input.error {
+  border-color: #e74c3c;
+  background-color: #fceaea;
+}
+
+/* TABLE STYLING */
+.table-zakat {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+  font-size: 0.95rem;
+}
+
+.table-zakat th,
+.table-zakat td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.table-zakat th {
+  background-color: #4eff77;
+  color: white;
+}
+
+.table-zakat tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table-zakat tr:hover {
+  background-color: #f1f1f1;
+}
 
 /* RESPONSIVE */
 @media (max-width: 768px) {

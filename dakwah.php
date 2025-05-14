@@ -1,93 +1,104 @@
-<?php include 'header.php'; ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dakwah</title>
-   
-</head>
-<body>
-  
+<?php
+session_start();   
+include 'header.php';
+include 'koneksi.php';
+include 'koneksi.php';
+
+
+// Tangani logout jika form logout ada di file ini
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header("location:dashboard.php");
+    exit();
+}
+
+// Ambil keyword pencarian jika ada
+$keyword = $_GET['q'] ?? '';
+
+// Konfigurasi pagination
+$per_page = 6;
+$page     = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset   = ($page - 1) * $per_page;
+
+// Total data (untuk pagination)
+if (!empty($keyword)) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM artikel_dakwah WHERE judul LIKE ? OR deskripsi LIKE ?");
+    $search = "%" . $keyword . "%";
+    $stmt->bind_param("ss", $search, $search);
+} else {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM artikel_dakwah");
+}
+$stmt->execute();
+$stmt->bind_result($total_data);
+$stmt->fetch();
+$stmt->close();
+
+$total_pages = ceil($total_data / $per_page);
+
+// Ambil data artikel sesuai halaman & pencarian
+if (!empty($keyword)) {
+    $sql = "SELECT * FROM artikel_dakwah WHERE judul LIKE ? OR deskripsi LIKE ? ORDER BY tanggal_dibuat DESC LIMIT ? OFFSET ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssii", $search, $search, $per_page, $offset);
+} else {
+    $sql = "SELECT * FROM artikel_dakwah ORDER BY tanggal_dibuat DESC LIMIT ? OFFSET ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $per_page, $offset);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+?>
+
 
 <div class="container">
 
-<h3 align="center">Cari Dakwah</h3>
-<div class="d-flex justify-content-center my-3">
-  <form class="d-flex" role="search" style="max-width: 600px; width: 100%;">
-    <input class="form-control me-2 flex-grow-1" type="search" placeholder="Cari dakwah..." aria-label="Search">
-    <button class="btn btn-outline-success" type="submit">Search</button>
-  </form>
-</div>
-
-
-<br><br>
-  <h3 class="text-left">Dakwah Hari Ini</h3>
-  <br>
-  <div class="row row-cols-1 row-cols-md-3 g-4">
-    <div class="col">
-      <div class="card">
-        <img src="../assest/dkwh1.jpg" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Judul Artikel 1</h5>
-          <p class="card-text">Konten artikel dakwah 1 yang menjelaskan isi penting dakwah hari ini.</p>
-          <a href="detail_dakwah.php" class="btn btn-success">Baca Artikel</a>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card">
-        <img src="../assest/dkwh3.jpg" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Judul Artikel 2</h5>
-          <p class="card-text">Konten artikel dakwah 2 sebagai lanjutan dari misi keislaman masa kini.</p>
-          <a href="#" class="btn btn-success">Baca Artikel</a>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card">
-        <img src="../assest/dkwh4.jpg" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Judul Artikel 3</h5>
-          <p class="card-text">Konten artikel dakwah 3 yang memuat nilai-nilai moral dalam kehidupan.</p>
-          <a href="#" class="btn btn-success">Baca Artikel</a>
-        </div>
-      </div>
-    </div>
-    <!-- Menambahkan 3 card tambahan -->
-    <div class="col">
-      <div class="card">
-        <img src="../assest/dkwh1.jpg" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Judul Artikel 4</h5>
-          <p class="card-text">Konten artikel dakwah 4 yang menjelaskan lebih dalam tentang nilai-nilai keislaman.</p>
-          <a href="#" class="btn btn-success">Baca Artikel</a>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card">
-        <img src="../assest/dkwh2.jpg" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Judul Artikel 5</h5>
-          <p class="card-text">Konten artikel dakwah 5 yang membahas tentang pentingnya dakwah di era modern.</p>
-          <a href="#" class="btn btn-success">Baca Artikel</a>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card">
-        <img src="../assest/dkwh3.jpg" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Judul Artikel 6</h5>
-          <p class="card-text">Konten artikel dakwah 6 yang memberikan inspirasi bagi umat.</p>
-          <a href="#" class="btn btn-success">Baca Artikel</a>
-        </div>
-      </div>
-    </div>
+  <h3 align="center">Cari Dakwah</h3>
+  <div class="d-flex justify-content-center my-3">
+    <form class="d-flex" role="search" method="GET" style="max-width: 600px; width: 100%;">
+      <input class="form-control me-2" type="search" name="q" placeholder="Cari dakwah..." aria-label="Search" value="<?php echo htmlspecialchars($keyword); ?>">
+      <button class="btn btn-outline-success" type="submit">Cari</button>
+    </form>
   </div>
+
+  <h3 class="text-left mb-4">Artikel Dakwah</h3>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <?php if ($result->num_rows > 0): ?>
+      <?php while ($row = $result->fetch_assoc()): ?>
+        <div class="col">
+          <div class="card h-100">
+            <img src="<?php echo htmlspecialchars($row['gambar']); ?>" class="card-img-top" alt="Gambar Artikel">
+            <div class="card-body">
+              <h5 class="card-title"><?php echo htmlspecialchars($row['judul']); ?></h5>
+              <p class="card-text"><?php echo htmlspecialchars($row['deskripsi']); ?></p>
+              <a href="detail_artikel.php?id=<?php echo $row['id']; ?>" class="btn btn-success">Baca Artikel</a>
+            </div>
+          </div>
+        </div>
+      <?php endwhile; ?>
+    <?php else: ?>
+      <p class="text-center">Tidak ada artikel ditemukan.</p>
+    <?php endif; ?>
+  </div>
+
+  <!-- PAGINATION -->
+  <?php if ($total_pages > 1): ?>
+    <nav aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+          <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
+            <a class="page-link" href="?page=<?php echo $i; ?><?php echo $keyword ? '&q=' . urlencode($keyword) : ''; ?>">
+              <?php echo $i; ?>
+            </a>
+          </li>
+        <?php endfor; ?>
+      </ul>
+    </nav>
+  <?php endif; ?>
+
 </div>
+
 <?php include 'footer.php'; ?>
 </body>
 

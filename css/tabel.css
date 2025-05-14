@@ -7,31 +7,44 @@
   text-align: center;
 }
 
+
+
+.form-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+}
+
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 
 .form-label {
   display: block;
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-  color: #444;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 .form-input {
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding: 0.65rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-  background: #fafafa;
-  transition: border 0.2s, background 0.2s;
+  font-size: 1rem;
+  box-sizing: border-box;
 }
 
-.form-input:focus {
-  border-color: #3498db;
-  background: #fff;
-  outline: none;
+textarea.form-input {
+  resize: vertical;
 }
+
+.text-center {
+  text-align: center;
+}
+
 .form-button {
   width: 100%;
   padding: 0.6rem;
@@ -72,7 +85,7 @@ input.error {
 }
 
 .table-zakat th {
-  background-color: #4eff77;
+  background-color: #b5b7b6;
   color: white;
 }
 
@@ -81,6 +94,38 @@ input.error {
 }
 
 .table-zakat tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table-wrapper {
+  max-width: 900px;
+  margin: 2rem auto;
+  overflow-x: auto;
+}
+
+.table-keuangan {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.table-keuangan th,
+.table-keuangan td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.table-keuangan th {
+  background-color: #797979;
+  color: white;
+}
+
+.table-keuangan tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table-keuangan tr:hover {
   background-color: #f1f1f1;
 }
 

@@ -19,7 +19,8 @@
 <body>
 </div> <!-- Penutup container -->
 <footer class="bg-light text-center py-4 mt-5">
-  <p>&copy; 2025 Syuhada.com.</p>
+  <p>&copy; 2025 Syuhada.com - Kelompok 3 Pendidikan Agama Islam </p>
+    <p>Sistem Informasi - Fakultas Teknik - Universitas Siliwangi </p>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
