@@ -1,10 +1,10 @@
 <?php
-// Pastikan pengguna sudah login (opsional)
-// session_start();
-// if (!isset($_SESSION['user_id'])) {
-//     header("Location: login.php");
-//     exit;
-// }
+include("koneksi.php");
+
+ if (!isset($_SESSION['user_id'])) {
+     header("Location: login.php");
+    exit;
+ }
 ?>
 
 <!DOCTYPE html>

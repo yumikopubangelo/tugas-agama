@@ -85,7 +85,7 @@ $query_artikel = $stmt_artikel_terbaru->get_result();
 <?php include 'preloader.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
     <title>Dashboard | <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Pengunjung'; ?></title> 
      <link rel="stylesheet" href="css/style_preloader.css">
      <link rel="stylesheet" href="css/button.css">
@@ -163,95 +163,394 @@ $query_artikel = $stmt_artikel_terbaru->get_result();
 </div>
 
 
-<!-- Jadwal Pengajian -->
-<br><br>
-<h3 class="text-left">Jadwal Pengajian</h3>
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Tanggal</th>
-      <th>Acara</th>
-      <th>Penceramah</th>
-      <th>Lokasi</th>
-    </tr>
-  </thead>
-  <tbody>
-    <?php
-    if ($result_jadwal && $result_jadwal->num_rows > 0) {
-        while ($row = $result_jadwal->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>" . date("d M Y", strtotime($row["tanggal"])) . "</td>";
-            echo "<td>" . htmlspecialchars($row["acara"]) . "</td>";
-            echo "<td>" . htmlspecialchars($row["penceramah"]) . "</td>";
-            echo "<td>" . htmlspecialchars($row["lokasi"]) . "</td>";
-            echo "</tr>";
-        }
-    } else {
-        echo "<tr><td colspan='4'>Belum ada jadwal pengajian.</td></tr>";
-    }
-    ?>
-  </tbody>
-</table>
 
-<br><br>
-<div class="container">
-  <h3 class="text-left">Jadwal Sholat dan Petugas</h3>
-  <div class="table-container" style="display: flex; justify-content: space-between;">
-    
-    <!-- Tabel Jadwal Sholat -->
-    <table class="table table-striped" style="width: 48%; margin-right: 10px;">
+<div class="pengajian-container">
+  <h3 class="text-middle">Jadwal Pengajian</h3>
+  
+  <!-- Desktop Table View -->
+  <div class="desktop-view">
+    <table class="table table-striped">
       <thead>
         <tr>
           <th>Tanggal</th>
-          <th>Sholat</th>
-          <th>Imam</th>
+          <th>Acara</th>
+          <th>Penceramah</th>
           <th>Lokasi</th>
         </tr>
       </thead>
       <tbody>
-        <?php if ($result_sholat && $result_sholat->num_rows > 0): ?>
-          <?php while ($row = $result_sholat->fetch_assoc()): ?>
+        <?php if ($result_jadwal && $result_jadwal->num_rows > 0): ?>
+          <?php while ($row = $result_jadwal->fetch_assoc()): ?>
             <tr>
               <td><?= date("d M Y", strtotime($row["tanggal"])) ?></td>
-              <td><?= htmlspecialchars($row["jenis_sholat"]) ?></td>
-              <td><?= htmlspecialchars($row["imam"]) ?></td>
+              <td><?= htmlspecialchars($row["acara"]) ?></td>
+              <td><?= htmlspecialchars($row["penceramah"]) ?></td>
               <td><?= htmlspecialchars($row["lokasi"]) ?></td>
             </tr>
           <?php endwhile; ?>
         <?php else: ?>
-          <tr><td colspan="4">Belum ada data jadwal sholat.</td></tr>
+          <tr><td colspan="4">Belum ada jadwal pengajian.</td></tr>
         <?php endif; ?>
       </tbody>
     </table>
-
-    <!-- Tabel Jadwal Petugas -->
-    <table class="table table-striped" style="width: 48%;">
-      <thead>
-        <tr>
-          <th>Tanggal</th>
-          <th>Petugas</th>
-          <th>Posisi</th>
-          <th>Lokasi</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php if ($result_petugas && $result_petugas->num_rows > 0): ?>
-          <?php while ($row = $result_petugas->fetch_assoc()): ?>
-            <tr>
-              <td><?= date("d M Y", strtotime($row["tanggal"])) ?></td>
-              <td><?= htmlspecialchars($row["petugas"]) ?></td>
-              <td><?= htmlspecialchars($row["posisi"]) ?></td>
-              <td><?= htmlspecialchars($row["lokasi"]) ?></td>
-            </tr>
-          <?php endwhile; ?>
-        <?php else: ?>
-          <tr><td colspan="4">Belum ada data petugas.</td></tr>
-        <?php endif; ?>
-      </tbody>
-    </table>
-
+  </div>
+  
+  <!-- Mobile Card View -->
+  <div class="mobile-cards">
+    <?php if ($result_jadwal && $result_jadwal->num_rows > 0): ?>
+      <?php while ($row = $result_jadwal->fetch_assoc()): ?>
+        <div class="pengajian-card">
+          <h4>Jadwal Pengajian</h4>
+          <div class="card-row">
+            <span class="card-label">Tanggal:</span>
+            <span><?= date("d M Y", strtotime($row["tanggal"])) ?></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Acara:</span>
+            <span><?= htmlspecialchars($row["acara"]) ?></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Penceramah:</span>
+            <span><?= htmlspecialchars($row["penceramah"]) ?></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Lokasi:</span>
+            <span><?= htmlspecialchars($row["lokasi"]) ?></span>
+          </div>
+        </div>
+      <?php endwhile; ?>
+    <?php else: ?>
+      <div class="pengajian-card">Belum ada jadwal pengajian.</div>
+    <?php endif; ?>
   </div>
 </div>
+
+<style>
+/* Base Styles */
+.pengajian-container {
+  margin: 20px 0;
+}
+
+.text-middle {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Desktop Table Styles */
+.desktop-view {
+  display: block;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+/* Mobile Card Styles */
+.mobile-cards {
+  display: none;
+}
+
+.pengajian-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.pengajian-card h4 {
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.card-row {
+  display: flex;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.card-label {
+  font-weight: 600;
+  min-width: 100px;
+  color: #555;
+}
+
+/* Responsive Behavior */
+@media (max-width: 767px) {
+  .desktop-view {
+    display: none;
+  }
+  
+  .mobile-cards {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-cards {
+    display: none;
+  }
+  
+  .desktop-view {
+    display: block;
+  }
+}
+</style>
+
+<script>
+// Responsive view switcher with error handling
+document.addEventListener('DOMContentLoaded', function() {
+  function checkView() {
+    const isMobile = window.innerWidth <= 767;
+    const desktopView = document.querySelector('.desktop-view');
+    const mobileCards = document.querySelector('.mobile-cards');
+    
+    if (desktopView && mobileCards) {
+      desktopView.style.display = isMobile ? 'none' : 'block';
+      mobileCards.style.display = isMobile ? 'block' : 'none';
+    }
+  }
+  
+  // Initial check
+  checkView();
+  
+  // Debounced resize handler
+  let resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(checkView, 250);
+  });
+});
+</script>
+
+<!-- Jadwal Sholat dan Petugas Section -->
+<div class="container">
+  <h3 class="text-middle">Jadwal Sholat dan Petugas</h3>
+  
+  <!-- Desktop Table View -->
+  <div class="mobile-card-view">
+    <div class="table-container">
+      <!-- Tabel Jadwal Sholat -->
+      <table class="table table-striped" style="width: 48%; margin-right: 10px;">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Sholat</th>
+            <th>Imam</th>
+            <th>Lokasi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if ($result_sholat && $result_sholat->num_rows > 0): ?>
+            <?php while ($row = $result_sholat->fetch_assoc()): ?>
+              <tr>
+                <td><?= date("d M Y", strtotime($row["tanggal"])) ?></td>
+                <td><?= htmlspecialchars($row["jenis_sholat"]) ?></td>
+                <td><?= htmlspecialchars($row["imam"]) ?></td>
+                <td><?= htmlspecialchars($row["lokasi"]) ?></td>
+              </tr>
+            <?php endwhile; ?>
+          <?php else: ?>
+            <tr><td colspan="4">Belum ada data jadwal sholat.</td></tr>
+          <?php endif; ?>
+        </tbody>
+      </table>
+
+      <!-- Tabel Jadwal Petugas -->
+      <table class="table table-striped" style="width: 48%;">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Petugas</th>
+            <th>Posisi</th>
+            <th>Lokasi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if ($result_petugas && $result_petugas->num_rows > 0): ?>
+            <?php while ($row = $result_petugas->fetch_assoc()): ?>
+              <tr>
+                <td><?= date("d M Y", strtotime($row["tanggal"])) ?></td>
+                <td><?= htmlspecialchars($row["petugas"]) ?></td>
+                <td><?= htmlspecialchars($row["posisi"]) ?></td>
+                <td><?= htmlspecialchars($row["lokasi"]) ?></td>
+              </tr>
+            <?php endwhile; ?>
+          <?php else: ?>
+            <tr><td colspan="4">Belum ada data petugas.</td></tr>
+          <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Mobile Card View (hidden by default) -->
+  <div class="card-container" style="display: none;">
+    <?php if ($result_sholat && $result_sholat->num_rows > 0): ?>
+      <?php while ($row = $result_sholat->fetch_assoc()): ?>
+        <div class="schedule-card">
+          <h4>Jadwal Sholat</h4>
+          <div class="card-row">
+            <span class="card-label">Tanggal:</span>
+            <span><?= date("d M Y", strtotime($row["tanggal"])) ?></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Sholat:</span>
+            <span><?= htmlspecialchars($row["jenis_sholat"]) ?></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Imam:</span>
+            <span><?= htmlspecialchars($row["imam"]) ?></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Lokasi:</span>
+            <span><?= htmlspecialchars($row["lokasi"]) ?></span>
+          </div>
+        </div>
+      <?php endwhile; ?>
+        <?php else: ?>
+            <tr><td colspan="4">Belum ada data jadwal sholat.</td></tr>
+    <?php endif; ?>
+    
+    <?php if ($result_petugas && $result_petugas->num_rows > 0): ?>
+      <?php while ($row = $result_petugas->fetch_assoc()): ?>
+        <div class="schedule-card">
+          <h4>Jadwal Petugas</h4>
+          <div class="card-row">
+            <span class="card-label">Tanggal:</span>
+            <span><?= date("d M Y", strtotime($row["tanggal"])) ?></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Petugas:</span>
+            <span><?= htmlspecialchars($row["petugas"]) ?></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Posisi:</span>
+            <span><?= htmlspecialchars($row["posisi"]) ?></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Lokasi:</span>
+            <span><?= htmlspecialchars($row["lokasi"]) ?></span>
+          </div>
+        </div>
+      <?php endwhile; ?>
+        <?php else: ?>
+            <tr><td colspan="4">Belum ada data petugas.</td></tr>
+    <?php endif; ?>
+  </div>
+</div>
+
+<style>
+/* Base Styles */
+.container {
+  margin: 20px 0;
+}
+
+/* Table Container */
+.table-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Card Styles */
+.schedule-card {
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: white;
+}
+
+.card-row {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.card-label {
+  font-weight: bold;
+  min-width: 100px;
+  color: #555;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .table-container {
+    flex-direction: column;
+  }
+  
+  .table-container table {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  
+  .mobile-card-view {
+    display: none;
+  }
+  
+  .card-container {
+    display: block !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .card-container {
+    display: none !important;
+  }
+  
+  .mobile-card-view {
+    display: block !important;
+  }
+}
+</style>
+
+<script>
+// Enhanced responsive view switcher
+function checkView() {
+  const isMobile = window.innerWidth <= 768;
+  const tableView = document.querySelector('.mobile-card-view');
+  const cardContainer = document.querySelector('.card-container');
+  
+  if (!tableView || !cardContainer) {
+    console.error("Required elements for responsive view not found");
+    return;
+  }
+  
+  tableView.style.display = isMobile ? 'none' : 'block';
+  cardContainer.style.display = isMobile ? 'block' : 'none';
+}
+
+// Debounce function for resize events
+function debounce(func, wait) {
+  let timeout;
+  return function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(func, wait);
+  };
+}
+
+// Initialize on load and resize
+window.addEventListener('load', checkView);
+window.addEventListener('resize', debounce(checkView, 250));
+</script>
+
 
 
 <!-- Carousel Kegiatan DKM -->
@@ -301,613 +600,6 @@ $query_artikel = $stmt_artikel_terbaru->get_result();
 </div>
 </div>
 
-<?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
-<!-- Add this before </body> -->
-<div class="admin-panel">
-  <div class="panel-tab" onclick="togglePanel()">
-    <i class="fas fa-cog fa-spin"></i>
-    <span class="notification-badge">6</span>
-  </div>
-  
-  <div class="panel-content">
-    <div class="panel-header">
-      <h4><i class="fas fa-user-shield"></i> Admin Panel</h4>
-      <button class="close-panel" onclick="togglePanel()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    
-    <div class="search-box">
-      <input type="text" placeholder="Cari fitur...">
-      <i class="fas fa-search"></i>
-    </div>
-    
-    <!-- Scrollable Content Area -->
-    <div class="panel-scrollable">
-      <div class="panel-group">
-        <div class="group-header" onclick="toggleGroup(this)">
-          <i class="fas fa-newspaper"></i>
-          <h5>Manajemen Konten</h5>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="group-links">
-          <a href="tambah_artikel.php" class="panel-link">
-            <div class="link-icon" style="background: #4CAF50;">
-              <i class="fas fa-pen"></i>
-            </div>
-            <div class="link-text">
-              <span>Buat Artikel</span>
-              <small>Publikasi konten baru</small>
-            </div>
-          </a>
-        </div>
-      </div>
-      
-      <div class="panel-group">
-        <div class="group-header" onclick="toggleGroup(this)">
-          <i class="fas fa-users-cog"></i>
-          <h5>Administrator</h5>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="group-links">
-          <a href="tambah_admin.php" class="panel-link">
-            <div class="link-icon" style="background: #2196F3;">
-              <i class="fas fa-user-plus"></i>
-            </div>
-            <div class="link-text">
-              <span>Tambah Admin</span>
-              <small>Buat akun baru</small>
-            </div>
-          </a>
-          <a href="lihat_admin.php" class="panel-link">
-            <div class="link-icon" style="background: #673AB7;">
-              <i class="fas fa-users"></i>
-            </div>
-            <div class="link-text">
-              <span>Lihat Admin</span>
-              <small>Kelola pengguna</small>
-            </div>
-          </a>
-        </div>
-      </div>
-      
-      <div class="panel-group">
-        <div class="group-header" onclick="toggleGroup(this)">
-          <i class="fas fa-calendar-alt"></i>
-          <h5>Jadwal Kegiatan</h5>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="group-links">
-          <a href="tambah_pengajian.php" class="panel-link">
-            <div class="link-icon" style="background: #FF9800;">
-              <i class="fas fa-mosque"></i>
-            </div>
-            <div class="link-text">
-              <span>Pengajian</span>
-              <small>Atur jadwal kajian</small>
-            </div>
-          </a>
-          <a href="tambah_jadwal_sholat.php" class="panel-link">
-            <div class="link-icon" style="background: #F44336;">
-              <i class="fas fa-clock"></i>
-            </div>
-             <div class="link-text">
-              <span>Jadwal Sholat</span>
-              <small>Atur waktu ibadah</small>
-            </div>
-          </a>
-          <a href="tambah_petugas.php" class="panel-link">
-            <div class="link-icon" style="background: #009688;">
-              <i class="fas fa-user-cog"></i>
-            </div>
-            <div class="link-text">
-              <span>Petugas</span>
-              <small>Kelura pembagian tugas</small>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div> < <!-- End of scrollable content -->
-    
-    <div class="panel-footer">
-      <small>DKM Masjid Suhada</small>
-      <a href="logout.php" class="logout-btn">
-        <i class="fas fa-sign-out-alt"></i> Logout
-      </a>
-    </div>
-  </div>
-</div>
-
-<style>
-
-/* Fixed positioning for the panel */
-.admin-panel {
-  position: fixed;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  z-index: 1000;
-}
-
-/* Panel content with proper height calculation */
-.panel-content {
-  position: absolute;
-  right: -300px;
-  width: 300px;
-  max-height: calc(100vh - 40px); /* Accounts for potential browser chrome */
-  background: white;
-  box-shadow: -5px 5px 15px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  transition: right 0.3s ease;
-}
-
-/* Scrollable area with proper constraints */
-.panel-scrollable {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 15px;
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-}
-
-/* Ensure content never exceeds viewport */
-@media (max-height: 700px) {
-  .panel-content {
-    max-height: 95vh;
-    top: 10px;
-    bottom: 10px;
-    transform: none;
-  }
-}
-
-/* ===== Base Styles ===== */
-.admin-panel {
-  position: fixed;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  z-index: 1000;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Panel Content with Scroll */
-.panel-content {
-  position: absolute;
-  right: -300px;
-  top: 0;
-  width: 300px;
-  height: 80vh;
-  max-height: 700px;
-  background: white;
-  border-radius: 15px 0 0 15px;
-  box-shadow: -10px 5px 25px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-}
-
-.admin-panel.open .panel-content {
-  right: 0;
-}
-
-/* Scrollable Area */
-.panel-scrollable {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding: 0 15px 15px;
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-}
-
-/* Scrollbar Styling */
-.panel-scrollable::-webkit-scrollbar {
-  width: 6px;
-}
-.panel-scrollable::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.2);
-  border-radius: 3px;
-}
-.admin-panel {
-  position: fixed;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  z-index: 1000;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* ===== Tab Button ===== */
-.panel-tab {
-  position: absolute;
-  left: -40px;
-  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-  color: white;
-  width: 40px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px 0 0 8px;
-  cursor: pointer;
-  box-shadow: -5px 5px 15px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
-  z-index: 2;
-}
-
-.panel-tab:hover {
-  width: 45px;
-  left: -45px;
-}
-
-.panel-tab i {
-  font-size: 1.2rem;
-}
-
-.notification-badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: #FF5722;
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  font-size: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ===== Panel Content ===== */
-.panel-content {
-  position: absolute;
-  right: -300px;
-  top: 0;
-  width: 300px;
-  height: 80vh;
-  max-height: 600px;
-  background: white;
-  border-radius: 15px 0 0 15px;
-  box-shadow: -10px 5px 25px rgba(0,0,0,0.1);
-  transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.admin-panel.open .panel-content {
-  right: 0;
-}
-
-/* ===== Header ===== */
-.panel-header {
-  padding: 15px 20px;
-  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.panel-header h4 {
-  margin: 0;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.close-panel {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.2s;
-}
-
-.close-panel:hover {
-  opacity: 1;
-}
-
-/* ===== Search Box ===== */
-.search-box {
-  padding: 15px 20px;
-  position: relative;
-  border-bottom: 1px solid #eee;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 8px 15px 8px 35px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  outline: none;
-  transition: border 0.3s;
-}
-
-.search-box input:focus {
-  border-color: #4CAF50;
-}
-
-.search-box i {
-  position: absolute;
-  left: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #777;
-}
-
-/* ===== Panel Groups ===== */
-.panel-group {
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.group-header {
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.group-header:hover {
-  background: #f9f9f9;
-}
-
-.group-header h5 {
-  margin: 0;
-  flex-grow: 1;
-  font-size: 0.95rem;
-  color: #444;
-}
-
-.group-header i:first-child {
-  color: #4CAF50;
-}
-
-.group-header i:last-child {
-  transition: transform 0.3s;
-}
-
-.panel-group.open .group-header i:last-child {
-  transform: rotate(180deg);
-}
-
-.group-links {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-}
-
-.panel-group.open .group-links {
-  max-height: 500px;
-}
-
-/* ===== Panel Links ===== */
-.panel-link {
-  display: flex;
-  align-items: center;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: #333;
-  transition: background 0.2s;
-}
-
-.panel-link:hover {
-  background: #f5fff5;
-}
-
-.link-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  margin-right: 12px;
-  flex-shrink: 0;
-}
-
-.link-text {
-  flex-grow: 1;
-}
-
-.link-text span {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.link-text small {
-  display: block;
-  font-size: 0.75rem;
-  color: #777;
-  margin-top: 2px;
-}
-
-/* ===== Footer ===== */
-.panel-footer {
-  margin-top: auto;
-  padding: 12px 20px;
-  background: #f9f9f9;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.8rem;
-  color: #666;
-}
-
-.logout-btn {
-  color: #F44336;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-weight: 500;
-}
-
-/* ===== Scrollbar ===== */
-.panel-scrollable {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding-bottom: 10px;
-}
-
-.panel-scrollable::-webkit-scrollbar {
-  width: 6px;
-}
-
-.panel-scrollable::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
-}
-/* Add these to your existing styles */
-.group-links {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-}
-
-.panel-content {
-  transition: right 0.3s ease, max-height 0.3s ease;
-}
-
-.search-box input {
-  transition: all 0.3s ease;
-}
-/* ===== Animation ===== */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateX(10px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.panel-link {
-  animation: fadeIn 0.3s ease-out forwards;
-  opacity: 0;
-}
-@media (max-height: 600px) {
-  .panel-content {
-    height: 90vh;
-  }}
-
-.panel-link:nth-child(1) { animation-delay: 0.1s; }
-.panel-link:nth-child(2) { animation-delay: 0.2s; }
-.panel-link:nth-child(3) { animation-delay: 0.3s; }
-</style>
-
-<script>
-// Toggle main panel with viewport boundary checking
-function togglePanel() {
-  const panel = document.querySelector('.admin-panel');
-  const content = panel.querySelector('.panel-content');
-  
-  panel.classList.toggle('open');
-  
-  if (panel.classList.contains('open')) {
-    // Reset styles first
-    content.style.maxHeight = '';
-    content.style.top = '';
-    content.style.bottom = '';
-    
-    // Calculate available space
-    const viewportHeight = window.innerHeight;
-    const panelHeight = content.scrollHeight;
-    const spaceAbove = content.getBoundingClientRect().top;
-    const spaceBelow = viewportHeight - spaceAbove;
-    
-    // Adjust if panel would go off-screen
-    if (panelHeight > spaceBelow) {
-      const newHeight = Math.min(panelHeight, viewportHeight - 20);
-      content.style.maxHeight = `${newHeight}px`;
-      content.style.overflowY = 'auto';
-      
-      // If panel is too tall even after adjustment
-      if (newHeight >= viewportHeight - 20) {
-        content.style.top = '10px';
-        content.style.bottom = '10px';
-      }
-    }
-  }
-}
-
-// Enhanced close-panel when clicking outside
-document.addEventListener('click', function(e) {
-  const panel = document.querySelector('.admin-panel');
-  const tab = document.querySelector('.panel-tab');
-  
-  if (!panel.contains(e.target) && e.target !== tab && !tab.contains(e.target)) {
-    panel.classList.remove('open');
-  }
-});
-
-// Responsive resize handler
-let resizeTimer;
-window.addEventListener('resize', function() {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(function() {
-    const panel = document.querySelector('.admin-panel.open');
-    if (panel) {
-      const content = panel.querySelector('.panel-content');
-      const viewportHeight = window.innerHeight;
-      content.style.maxHeight = `${viewportHeight - 20}px`;
-      
-      // Re-check position
-      togglePanel();
-    }
-  }, 250);
-});
-
-// Toggle individual groups with smooth animation
-function toggleGroup(header) {
-  const group = header.parentElement;
-  const links = group.querySelector('.group-links');
-  
-  group.classList.toggle('open');
-  
-  if (group.classList.contains('open')) {
-    links.style.maxHeight = `${links.scrollHeight}px`;
-  } else {
-    links.style.maxHeight = '0';
-  }
-}
-
-// Debounced search functionality
-let searchTimer;
-document.querySelector('.search-box input').addEventListener('input', function(e) {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(function() {
-    const searchTerm = e.target.value.toLowerCase().trim();
-    
-    document.querySelectorAll('.panel-link').forEach(link => {
-      const text = link.textContent.toLowerCase();
-      link.style.display = text.includes(searchTerm) ? 'flex' : 'none';
-    });
-    
-    // Auto-expand groups with matches
-    document.querySelectorAll('.panel-group').forEach(group => {
-      const hasVisibleLinks = group.querySelector('.panel-link[style="display: flex;"]');
-      if (hasVisibleLinks) {
-        group.classList.add('open');
-        group.querySelector('.group-links').style.maxHeight = `${group.querySelector('.group-links').scrollHeight}px`;
-      }
-    });
-  }, 300);
-});
-
-// Initialize groups with proper max-height
-document.querySelectorAll('.panel-group').forEach(group => {
-  const links = group.querySelector('.group-links');
-  if (group.classList.contains('open')) {
-    links.style.maxHeight = `${links.scrollHeight}px`;
-  } else {
-    links.style.maxHeight = '0';
-  }
-});
-</script>
-<?php endif; ?>
 
 <?php include 'footer.php'; ?>
 <script src="js/preloader.js"></script>

@@ -1,4 +1,4 @@
-/* Typography & Layout for Form */
+/* typography.css */
 .form-title {
   font-size: 1.5rem;
   font-weight: 700;
@@ -7,8 +7,7 @@
   text-align: center;
 }
 
-
-
+/* forms.css */
 .form-container {
   max-width: 700px;
   margin: 2rem auto;
@@ -22,110 +21,67 @@
   margin-bottom: 1.2rem;
 }
 
-.form-label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
 .form-input {
   width: 100%;
   padding: 0.65rem;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 1rem;
-  box-sizing: border-box;
+  transition: border-color 0.3s;
 }
 
-textarea.form-input {
-  resize: vertical;
-}
-
-.text-center {
-  text-align: center;
+.form-input:focus {
+  border-color: #3ab929;
+  outline: none;
 }
 
 .form-button {
-  width: 100%;
-  padding: 0.6rem;
-  background-color: transparent;
-  color: #3ab929;
-  font-weight: bold;
-  border: 2px solid #3ab929;
+  background-color: #3ab929;
+  color: white;
+  padding: 12px;
+  border: none;
   border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  transition: background-color 0.3s;
 }
 
 .form-button:hover {
-  background-color: #3ab929;
-  color: white;
+  background-color: #2fa01e;
 }
 
-
-/* Optional Error Styling */
-input.error {
-  border-color: #e74c3c;
-  background-color: #fceaea;
-}
-
-/* Table Styling (if you include a table below the form) */
-.table-zakat {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 2rem;
-  font-size: 0.95rem;
-}
-
-.table-zakat th,
-.table-zakat td {
-  border: 1px solid #ddd;
-  padding: 0.75rem;
-  text-align: left;
-}
-
-.table-zakat th {
-  background-color: #b5b7b6;
-  color: white;
-}
-
-.table-zakat tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.table-zakat tr:hover {
-  background-color: #f1f1f1;
-}
-
+/* tables.css */
 .table-wrapper {
-  max-width: 900px;
-  margin: 2rem auto;
   overflow-x: auto;
+  margin: 2rem 0;
 }
 
 .table-keuangan {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
-}
-
-.table-keuangan th,
-.table-keuangan td {
-  border: 1px solid #ddd;
-  padding: 0.75rem;
-  text-align: left;
+  min-width: 600px;
 }
 
 .table-keuangan th {
-  background-color: #797979;
+  background-color: #3ab929;
   color: white;
+  padding: 12px;
+  text-align: left;
 }
 
-.table-keuangan tr:nth-child(even) {
-  background-color: #f9f9f9;
+.table-keuangan td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
 }
 
-.table-keuangan tr:hover {
-  background-color: #f1f1f1;
+/* Responsive */
+@media (max-width: 768px) {
+  .form-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .table-wrapper {
+    margin: 1rem -15px;
+  }
 }
-

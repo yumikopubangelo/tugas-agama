@@ -1,6 +1,5 @@
 <?php
 include "koneksi.php";
-session_start();
 
 // Nonaktifkan cek login agar tidak redirect
 // if (!isset($_SESSION['username'])) {

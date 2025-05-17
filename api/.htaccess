@@ -1,0 +1,21 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Block direct access to .php files
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.php\ HTTP/
+    RewriteRule ^(.*)\.php$ /$1 [R=301,L]
+    
+    # Allow only specific endpoints
+    RewriteRule ^zakat/distribusi$ distribusi.php [NC,L]
+    RewriteRule ^zakat/mustahiq$ mustahiq.php [NC,L]
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set Content-Security-Policy "default-src 'self'"
+</IfModule>
+
+# Disable directory listing
+Options -Indexes

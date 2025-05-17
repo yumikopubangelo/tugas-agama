@@ -1,8 +1,7 @@
 <?php
 session_start();   
 include 'header.php';
-include 'koneksi.php';
-include 'koneksi.php';
+include_once 'koneksi.php';  // Will only be included once even if called multiple times
 
 
 // Tangani logout jika form logout ada di file ini
